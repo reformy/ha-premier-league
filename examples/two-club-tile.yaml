@@ -1,0 +1,108 @@
+# Two clubs in one tile, as pictured in the README.
+#
+# Each club is a three-line block -- both crests either side of vs/at, the
+# opponent, then the kickoff -- with the clubs stacked and separated by a rule.
+#
+# Kickoff times follow each user's own Profile -> Time Format (12- or 24-hour):
+# button-card passes `hass` and `helpers` into JS templates, and
+# helpers.formatTime() is Home Assistant's own locale-aware formatter. There is
+# a manual fallback for button-card builds that predate `helpers`.
+#
+# Crests need an <img>, which `icon:` cannot render, so the rows are built by a
+# custom_fields entry returning HTML.
+#
+# Requires button-card from HACS: https://github.com/custom-cards/button-card
+# Edit the `teams` array below -- entity id and a short label per club. Adding a
+# third or fourth club is a one-line change (raise `rows` to match).
+
+type: custom:button-card
+entity: sensor.crystal_palace_next_match
+show_icon: false
+show_name: false
+show_state: false
+show_label: false
+custom_fields:
+  matches: >
+    [[[
+      var teams = [
+        ['sensor.crystal_palace_next_match', 'Palace'],
+        ['sensor.manchester_city_next_match', 'Man City']
+      ];
+      var lang = (hass && hass.locale && hass.locale.language) || undefined;
+      var fmt = (typeof helpers !== 'undefined' && helpers) ? helpers : null;
+
+      var timeOf = function (d) {
+        if (fmt && fmt.formatTime) return fmt.formatTime(d);
+        var tf = (hass && hass.locale && hass.locale.time_format) || 'language';
+        var o = { hour: 'numeric', minute: '2-digit' };
+        if (tf === '24') o.hour12 = false;
+        if (tf === 'am_pm') o.hour12 = true;
+        return d.toLocaleTimeString(lang, o);
+      };
+      var weekdayOf = function (d) {
+        if (fmt && fmt.formatDateWeekdayShort) return fmt.formatDateWeekdayShort(d);
+        return d.toLocaleDateString(lang, { weekday: 'short' });
+      };
+      var crest = function (url, alt) {
+        return url
+          ? '<img src="' + url + '" alt="' + alt + '" style="width:28px;height:28px;object-fit:contain;">'
+          : '<span style="display:inline-block;width:28px;text-align:center;font-size:19px;">&#9917;</span>';
+      };
+
+      var blocks = teams.map(function (t, i) {
+        var e = states[t[0]];
+        var a = (e && e.attributes) || {};
+        var gone = !e || ['unknown', 'unavailable'].indexOf(e.state) !== -1;
+        var colour = 'var(--primary-text-color)';
+        var crests, who, when;
+
+        if (gone) {
+          crests = crest(a.team_logo, t[1]);
+          who = t[1];
+          when = 'no fixture';
+          colour = '#8e9199';
+        } else {
+          var d = new Date(e.state);
+          var today = new Date();
+          var n = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate())
+            - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000);
+          crests = crest(a.team_logo, t[1])
+            + '<span style="font-size:11px;color:#8e9199;">' + (a.home ? 'vs' : 'at') + '</span>'
+            + crest(a.opponent_logo, a.opponent_short || a.opponent || '');
+          who = a.opponent_short || a.opponent || '?';
+          var day = n <= 0 ? 'today' : n === 1 ? 'tomorrow'
+            : n < 7 ? weekdayOf(d)
+            : d.toLocaleDateString(lang, { day: 'numeric', month: 'short' });
+          when = day + ' \u00b7 ' + timeOf(d);
+          if ((d - new Date()) / 3600000 <= 24) colour = '#e74c3c';
+        }
+
+        var divider = i === 0 ? ''
+          : 'padding-top:9px;margin-top:9px;border-top:1px solid var(--divider-color, rgba(127,127,127,0.25));';
+
+        return '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;' + divider + '">'
+          + '<div style="display:flex;align-items:center;gap:6px;line-height:1;">' + crests + '</div>'
+          + '<span style="font-size:14px;font-weight:600;line-height:1.2;color:' + colour + ';max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + who + '</span>'
+          + '<span style="font-size:11.5px;line-height:1.2;color:#8e9199;white-space:nowrap;">' + when + '</span>'
+          + '</div>';
+      });
+      return '<div style="display:flex;flex-direction:column;width:100%;min-width:0;">' + blocks.join('') + '</div>';
+    ]]]
+styles:
+  card:
+    - background: transparent
+    - border: none
+    - box-shadow: none
+    - padding: 6px 8px
+  grid:
+    - grid-template-areas: '"matches"'
+    - grid-template-columns: 1fr
+  custom_fields:
+    matches:
+      - width: 100%
+      - overflow: visible
+tap_action:
+  action: more-info
+grid_options:
+  columns: 6
+  rows: 3

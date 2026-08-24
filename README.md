@@ -9,6 +9,10 @@ light in the team's colours, announce the score at breakfast.
 Built because kickoffs in England land in the middle of the night in Australia,
 and a reminder waiting on the kitchen tablet in the morning beats remembering.
 
+![Two followed clubs on a dashboard tile](https://raw.githubusercontent.com/reformy/ha-premier-league/main/docs/fixtures-tile.png)
+
+*Two followed clubs in one tile — see [`examples/two-club-tile.yaml`](examples/two-club-tile.yaml).*
+
 ## Installation
 
 ### HACS
@@ -112,10 +116,20 @@ actions:
 
 ## Dashboard
 
-`examples/next-match-card.yaml` is a compact tile showing the opponent, the
-kickoff in local time and how far away it is, turning red inside 24 hours. It
-needs [button-card](https://github.com/custom-cards/button-card).
-`examples/next-match-markdown.yaml` does the same with no custom cards.
+Three examples, all reading everything from `sensor.<team>_next_match`:
+
+- [`examples/two-club-tile.yaml`](examples/two-club-tile.yaml) — the tile
+  pictured above: two clubs stacked, both crests per fixture, kickoff times in
+  each viewer's own 12- or 24-hour preference. Needs
+  [button-card](https://github.com/custom-cards/button-card).
+- [`examples/next-match-card.yaml`](examples/next-match-card.yaml) — a single
+  club on one line, turning red inside 24 hours. Also button-card.
+- [`examples/next-match-markdown.yaml`](examples/next-match-markdown.yaml) —
+  the same with no custom cards at all.
+
+Kickoff times in the button-card examples come from `helpers.formatTime()`,
+Home Assistant's own locale-aware formatter, so they follow each user's
+Profile → Time Format rather than a format baked into the card.
 
 ## How the fixture data works
 
