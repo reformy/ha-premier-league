@@ -1,0 +1,13 @@
+{
+  "domain": "premier_league",
+  "name": "Premier League",
+  "codeowners": ["@reformy"],
+  "config_flow": true,
+  "documentation": "https://github.com/reformy/ha-premier-league",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/reformy/ha-premier-league/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "1.0.0"
+}

@@ -1,0 +1,52 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Follow a Premier League team",
+        "description": "Pick the clubs you want fixtures for. Each club gets its own device, sensors and calendar.",
+        "data": {
+          "teams": "Teams"
+        }
+      }
+    },
+    "error": {
+      "no_teams": "Pick at least one team."
+    },
+    "abort": {
+      "cannot_connect": "Could not reach the fixture service. Check Home Assistant's internet access and try again."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Followed teams",
+        "description": "Add or remove clubs. Removing a club deletes its device and entities.",
+        "data": {
+          "teams": "Teams"
+        }
+      }
+    },
+    "error": {
+      "no_teams": "Pick at least one team."
+    },
+    "abort": {
+      "cannot_connect": "Could not reach the fixture service. Check Home Assistant's internet access and try again."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "next_match": { "name": "Next match" },
+      "next_opponent": { "name": "Next opponent" },
+      "next_venue": {
+        "name": "Next venue",
+        "state": { "Home": "Home", "Away": "Away" }
+      },
+      "last_match": { "name": "Last match" },
+      "last_opponent": { "name": "Last opponent" },
+      "last_result": { "name": "Last result" }
+    },
+    "calendar": {
+      "fixtures": { "name": "Fixtures" }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+blueprint:
+  name: Add a "watch the match" to-do at full time
+  description: >-
+    When a followed team's match reaches full time, add a to-do item so nobody
+    has to remember to watch the recording.
+
+    Useful when kickoffs land overnight in your timezone: the reminder is
+    waiting on the dashboard in the morning.
+
+    Fires on the `premier_league_match_finished` event, which the Premier
+    League integration raises exactly once per finished match — so a Home
+    Assistant restart will not re-add a reminder for a match you already saw.
+  domain: automation
+  source_url: https://github.com/reformy/ha-premier-league/blob/main/blueprints/automation/premier_league/watch_match_todo.yaml
+  input:
+    todo_list:
+      name: To-do list
+      description: The list the reminder is added to.
+      selector:
+        entity:
+          filter:
+            domain: todo
+    team_filter:
+      name: Only this team
+      description: >-
+        Leave empty to react to every followed team. Otherwise enter the team
+        name exactly as it appears on the device, e.g. "Crystal Palace".
+      default: ""
+      selector:
+        text:
+    item_prefix:
+      name: Reminder wording
+      description: >-
+        The to-do reads "<wording> <team> - <opponent> match".
+      default: Watch
+      selector:
+        text:
+
+mode: queued
+max: 10
+
+triggers:
+  - trigger: event
+    event_type: premier_league_match_finished
+
+variables:
+  team_filter: !input team_filter
+  item_prefix: !input item_prefix
+
+conditions:
+  - condition: template
+    value_template: >-
+      {{ team_filter | trim == "" or trigger.event.data.team == team_filter }}
+
+actions:
+  - action: todo.add_item
+    target:
+      entity_id: !input todo_list
+    data:
+      item: >-
+        {{ item_prefix }} {{ trigger.event.data.team }} -
+        {{ trigger.event.data.opponent }} match
+      description: >-
+        {{ trigger.event.data.team }} {{ trigger.event.data.score }}
+        {{ trigger.event.data.opponent }}
+        ({{ 'home' if trigger.event.data.home else 'away' }})

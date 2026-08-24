@@ -1,0 +1,55 @@
+# A "next match" tile for a Lovelace dashboard.
+#
+# Everything it needs is on sensor.<team>_next_match: the state is the kickoff
+# time and the attributes carry the opponent, venue and home/away, so no
+# companion entities are required.
+#
+# Requires button-card from HACS: https://github.com/custom-cards/button-card
+# Replace crystal_palace with your own team's slug.
+
+type: custom:button-card
+entity: sensor.crystal_palace_next_match
+icon: mdi:soccer
+show_name: true
+show_icon: true
+show_state: false
+show_label: true
+name: >
+  [[[
+    if (!entity || ['unknown', 'unavailable'].indexOf(entity.state) !== -1) return 'No fixture scheduled';
+    var a = entity.attributes;
+    return (a.home ? 'vs ' : 'away to ') + a.opponent;
+  ]]]
+label: >
+  [[[
+    if (!entity || ['unknown', 'unavailable'].indexOf(entity.state) !== -1) return '';
+    var d = new Date(entity.state);
+    var day = d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+    var time = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    var sod = function (x) { return new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime(); };
+    var n = Math.round((sod(d) - sod(new Date())) / 86400000);
+    var rel = n <= 0 ? 'today' : (n === 1 ? 'tomorrow' : 'in ' + n + ' days');
+    return day + ' · ' + time + ' · ' + rel;
+  ]]]
+size: 28px
+styles:
+  card:
+    - background: transparent
+    - border: none
+    - box-shadow: none
+    - padding: 8px 4px
+  icon:
+    - color: >
+        [[[
+          if (!entity || ['unknown', 'unavailable'].indexOf(entity.state) !== -1) return '#8e9199';
+          var hrs = (new Date(entity.state) - new Date()) / 3600000;
+          return hrs <= 24 ? '#e74c3c' : '#2f8fff';
+        ]]]
+  name:
+    - font-size: 14px
+    - font-weight: 500
+  label:
+    - font-size: 11px
+    - color: '#8e9199'
+tap_action:
+  action: more-info

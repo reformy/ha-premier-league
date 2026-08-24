@@ -1,0 +1,15 @@
+# The same information with no custom cards — plain Lovelace only.
+
+type: markdown
+content: >-
+  {% set s = states['sensor.crystal_palace_next_match'] %}
+  {% if s is none or s.state in ['unknown', 'unavailable'] %}
+  ### No fixture scheduled
+  {% else %}
+  ### {{ 'vs' if s.attributes.home else 'away to' }} {{ s.attributes.opponent }}
+
+  {{ s.state | as_datetime | as_local | timestamp_custom('%a %-d %b, %-I:%M %p', false) }}
+  · {{ s.attributes.venue }}
+
+  _{{ (s.state | as_datetime - now()).days }} days away_
+  {% endif %}

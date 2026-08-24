@@ -1,0 +1,15 @@
+{
+  "entity": {
+    "sensor": {
+      "next_match": { "default": "mdi:soccer" },
+      "next_opponent": { "default": "mdi:shield-half-full" },
+      "next_venue": { "default": "mdi:stadium" },
+      "last_match": { "default": "mdi:history" },
+      "last_opponent": { "default": "mdi:shield-outline" },
+      "last_result": { "default": "mdi:scoreboard" }
+    },
+    "calendar": {
+      "fixtures": { "default": "mdi:calendar-star" }
+    }
+  }
+}
