@@ -73,9 +73,10 @@ SENSORS: tuple[PremierLeagueSensorDescription, ...] = (
         key="next_venue",
         translation_key="next_venue",
         device_class=SensorDeviceClass.ENUM,
-        options=["Home", "Away"],
+        # Enum states are slugs; the display text lives in strings.json.
+        options=["home", "away"],
         value_fn=lambda data: (
-            ("Home" if f.home else "Away") if (f := data.next_fixture) else None
+            ("home" if f.home else "away") if (f := data.next_fixture) else None
         ),
     ),
     PremierLeagueSensorDescription(

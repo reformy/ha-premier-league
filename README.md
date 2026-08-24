@@ -40,7 +40,7 @@ Per followed team, where `<team>` is the club slug (`crystal_palace`):
 | --- | --- | --- |
 | `sensor.<team>_next_match` | `2026-08-28T19:00:00+00:00` | Timestamp of the next kickoff |
 | `sensor.<team>_next_opponent` | `Manchester City` | |
-| `sensor.<team>_next_venue` | `Home` | `Home` or `Away` |
+| `sensor.<team>_next_venue` | `home` | `home` or `away` (shown as Home/Away in the UI) |
 | `sensor.<team>_last_match` | `2026-08-22T14:00:00+00:00` | Timestamp of the last completed match |
 | `sensor.<team>_last_opponent` | `Everton` | |
 | `sensor.<team>_last_result` | `0-2 L` | Score and outcome, from your team's point of view |

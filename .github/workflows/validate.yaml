@@ -24,3 +24,7 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
+          # The brands check requires assets in home-assistant/brands, which
+          # only matters for inclusion in the HACS default store. Installing
+          # this as a custom repository does not need them.
+          ignore: brands

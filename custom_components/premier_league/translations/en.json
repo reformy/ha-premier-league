@@ -35,18 +35,33 @@
   },
   "entity": {
     "sensor": {
-      "next_match": { "name": "Next match" },
-      "next_opponent": { "name": "Next opponent" },
+      "next_match": {
+        "name": "Next match"
+      },
+      "next_opponent": {
+        "name": "Next opponent"
+      },
       "next_venue": {
         "name": "Next venue",
-        "state": { "Home": "Home", "Away": "Away" }
+        "state": {
+          "home": "Home",
+          "away": "Away"
+        }
       },
-      "last_match": { "name": "Last match" },
-      "last_opponent": { "name": "Last opponent" },
-      "last_result": { "name": "Last result" }
+      "last_match": {
+        "name": "Last match"
+      },
+      "last_opponent": {
+        "name": "Last opponent"
+      },
+      "last_result": {
+        "name": "Last result"
+      }
     },
     "calendar": {
-      "fixtures": { "name": "Fixtures" }
+      "fixtures": {
+        "name": "Fixtures"
+      }
     }
   }
 }
