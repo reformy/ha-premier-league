@@ -73,6 +73,17 @@ It fires when a match newly appears as completed, and never on the first
 refresh after a restart — so restarting Home Assistant will not re-announce a
 match you already know about.
 
+### When both clubs are followed
+
+If you follow two teams and they play each other, the match reaches both of
+their coordinators. It is still announced **once**: the home side raises the
+event and the away side stays quiet. So a Palace–City derby produces one
+reminder, not two, and the event's `team` is whichever club was at home.
+
+`sensor.<team>_last_result` is unaffected and stays correct from each team's
+own point of view — the same derby reads `2-1 W` on one and `1-2 L` on the
+other.
+
 ### The to-do blueprint
 
 `blueprints/automation/premier_league/watch_match_todo.yaml` turns that event

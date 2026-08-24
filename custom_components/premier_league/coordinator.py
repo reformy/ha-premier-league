@@ -61,8 +61,13 @@ class PremierLeagueCoordinator(DataUpdateCoordinator[TeamData]):
         config_entry: ConfigEntry,
         session: ClientSession,
         team: Team,
+        followed: frozenset[str] = frozenset(),
     ) -> None:
-        """Initialise the coordinator for a single team."""
+        """Initialise the coordinator for a single team.
+
+        `followed` is every team id in the config entry, which lets a match
+        between two followed clubs be announced once instead of twice.
+        """
         super().__init__(
             hass,
             _LOGGER,
@@ -72,6 +77,7 @@ class PremierLeagueCoordinator(DataUpdateCoordinator[TeamData]):
         )
         self.team = team
         self._session = session
+        self._followed = followed | {team.id}
 
     async def _async_update_data(self) -> TeamData:
         """Fetch fixtures, and fire an event if a match has just finished."""
@@ -96,7 +102,21 @@ class PremierLeagueCoordinator(DataUpdateCoordinator[TeamData]):
         return data
 
     def _fire_match_finished(self, fixture: Fixture) -> None:
-        """Announce full time on the event bus."""
+        """Announce full time on the event bus.
+
+        A match between two followed clubs reaches both of their coordinators,
+        which would announce it twice and, with the bundled blueprint, produce
+        two to-do items for one game. The home side announces it; the away
+        side stays quiet and lets its counterpart do the talking.
+        """
+        if fixture.opponent_id in self._followed and not fixture.home:
+            _LOGGER.debug(
+                "Not announcing %s v %s: the home side announces this one",
+                fixture.opponent,
+                self.team.name,
+            )
+            return
+
         _LOGGER.debug(
             "%s finished against %s (%s)",
             self.team.name,

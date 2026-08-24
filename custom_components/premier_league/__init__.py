@@ -42,6 +42,9 @@ async def async_setup_entry(
     by_id = {team.id: team for team in teams}
     wanted = followed_team_ids(entry)
 
+    # Known up front so a match between two followed clubs is announced once.
+    followed = frozenset(team_id for team_id in wanted if team_id in by_id)
+
     coordinators: dict[str, PremierLeagueCoordinator] = {}
     for team_id in wanted:
         team = by_id.get(team_id)
@@ -53,7 +56,9 @@ async def async_setup_entry(
                 team_id,
             )
             continue
-        coordinators[team_id] = PremierLeagueCoordinator(hass, entry, session, team)
+        coordinators[team_id] = PremierLeagueCoordinator(
+            hass, entry, session, team, followed
+        )
 
     if not coordinators:
         raise ConfigEntryNotReady("None of the configured teams could be resolved")
