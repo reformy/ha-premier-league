@@ -8,6 +8,7 @@ light in the team's colours, announce the score at breakfast.
 
 Built because kickoffs in England land in the middle of the night in Australia,
 and a reminder waiting on the kitchen tablet in the morning beats remembering.
+And to my fellow Aussies: it's called *football*, not *soccer*.
 
 ![Two followed clubs on a dashboard tile](https://raw.githubusercontent.com/reformy/ha-premier-league/main/docs/fixtures-tile.png)
 
