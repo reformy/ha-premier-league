@@ -36,6 +36,8 @@ def _fixture_attrs(fixture: Fixture | None) -> dict[str, Any]:
         return {}
     return {
         ATTR_OPPONENT: fixture.opponent,
+        "opponent_short": fixture.opponent_short,
+        "opponent_abbr": fixture.opponent_abbr,
         ATTR_HOME: fixture.home,
         ATTR_VENUE: fixture.venue,
         ATTR_KICKOFF: fixture.kickoff,
@@ -137,4 +139,9 @@ class PremierLeagueSensor(PremierLeagueEntity, SensorEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return the whole fixture alongside the state."""
-        return self.entity_description.attrs_fn(self.team_data)
+        attrs = self.entity_description.attrs_fn(self.team_data)
+        # The followed club's own crest, so a card can show whose fixture this
+        # is without needing a second entity.
+        if attrs and (logo := self.coordinator.team.logo):
+            attrs["team_logo"] = logo
+        return attrs

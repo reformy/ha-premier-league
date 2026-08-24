@@ -47,8 +47,11 @@ Per followed team, where `<team>` is the club slug (`crystal_palace`):
 | `calendar.<team>_fixtures` | | Every fixture, played and unplayed |
 
 Both `next_*` and `last_*` sensors carry the full fixture as attributes —
-`opponent`, `home`, `venue`, `kickoff`, `score`, `outcome`, `opponent_logo`,
+`opponent`, `opponent_short` (`Man City`), `opponent_abbr` (`MNC`), `home`,
+`venue`, `kickoff`, `score`, `outcome`, `opponent_logo`, `team_logo`,
 `status`, `match_id` — so a dashboard card usually needs only the one entity.
+`team_logo` is the followed club's own crest, which lets a tile show whose
+fixture it is without a second entity.
 
 Fixtures are polled every 30 minutes.
 

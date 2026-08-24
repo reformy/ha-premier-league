@@ -53,6 +53,8 @@ class Fixture:
     id: str
     kickoff: datetime
     opponent: str
+    opponent_short: str
+    opponent_abbr: str
     opponent_id: str
     opponent_logo: str | None
     home: bool
@@ -152,13 +154,17 @@ def _parse_fixture(event: dict[str, Any], team_id: str) -> Fixture | None:
     status_type = (competition.get("status") or {}).get("type") or {}
     opponent_team = them.get("team") or {}
     venue = (competition.get("venue") or {}).get("fullName")
+    opponent_name = (
+        opponent_team.get("displayName") or opponent_team.get("name") or "Unknown"
+    )
 
     return Fixture(
         id=str(event.get("id") or competition.get("id") or kickoff.isoformat()),
         kickoff=dt_util.as_utc(kickoff),
-        opponent=opponent_team.get("displayName")
-        or opponent_team.get("name")
-        or "Unknown",
+        opponent=opponent_name,
+        # Short forms for narrow dashboard tiles: "Man City", "MNC".
+        opponent_short=opponent_team.get("shortDisplayName") or opponent_name,
+        opponent_abbr=opponent_team.get("abbreviation") or "",
         opponent_id=str(them.get("id", "")),
         opponent_logo=_parse_logo(opponent_team),
         home=us.get("homeAway") == "home",
